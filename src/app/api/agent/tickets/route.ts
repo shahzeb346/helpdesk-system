@@ -4,6 +4,9 @@ import { getActiveUser } from "@/lib/permissions";
 import { connectDB } from "@/lib/mongodb";
 import Ticket from "@/models/Ticket";
 
+import Category from "@/models/Category";
+import User from "@/models/User";
+
 export const runtime = "nodejs";
 
 export async function GET() {
@@ -31,6 +34,9 @@ export async function GET() {
 
     // 3. Connect to MongoDB.
     await connectDB();
+
+    void Category;
+    void User;
 
     // 4. Retrieve only tickets assigned to this agent.
     const tickets = await Ticket.find({

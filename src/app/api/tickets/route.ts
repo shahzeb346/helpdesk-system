@@ -78,10 +78,7 @@ export async function GET(request: Request) {
 
     if (search) {
       // Escape special regex characters entered by the user.
-      const safeSearch = search.replace(
-        /[.*+?^${}()|[\]\\]/g,
-        "\\$&"
-      );
+      const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
       filter.$or = [
         {
@@ -174,7 +171,13 @@ export async function POST(request: Request) {
 
     await connectDB();
 
-    const { title, description, category, priority } = parsed.data;
+    const {
+      title,
+      description,
+      category,
+      priority,
+      attachments,
+    } = parsed.data;
 
     // 3. Confirm the category exists.
     const existingCategory = await Category.findById(category);
@@ -198,7 +201,7 @@ export async function POST(request: Request) {
       now.getTime() + sla.resolution * 60 * 60 * 1000
     );
 
-    // 5. Create the ticket.
+    // 5. Create the ticket with its attachments.
     const ticket = await Ticket.create({
       title,
       description,
@@ -207,7 +210,7 @@ export async function POST(request: Request) {
       status: "Open",
       createdBy: user._id,
       assignedAgent: null,
-      attachments: [],
+      attachments,
       firstResponseDueAt,
       resolutionDueAt,
       firstResponseBreached: false,
